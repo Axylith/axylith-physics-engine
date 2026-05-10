@@ -1,5 +1,5 @@
 **NUMBER**
-digit := "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9";  
+digit := "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"; 
 sign := "+"|"-";
 integer = [sign], digit, {digit};
 decimal = integer,".", digit, {digit};
@@ -9,10 +9,19 @@ base_unit = "kg"|"m"|"s"|"A"|"K"|"mol"|"cd";
 derived_unit = "N"|"J"|"Hz"|"Pa"|"V"|"W"|"rad"|"C"|"ohm"|"F"|"Wb"|"S"|"T"|"H"|"lm"|"lx"|"Bq"|"Gy"|"Sv";
 misc_unit = "L"|"degC"|"min"|"h"|"day"|"deg";
 unit_atom = base_unit | derived_unit | misc_unit;
+ 
+unit_exponent = unit_atom, ["^", integer]; # allows units to be written with powers e.g. m/s^2, kg^2, etc.
+unit_expression = unit_exponent, {("*"|"/"), unit_exponent}; <-- main dimensional unit 
 
 **SCIENTIFIC NOTATION**
 exponent = "e"|"E";
-sci_not = (decimal | integer), [exponent, integer];
+sci_not = (decimal | integer), [exponent, integer]; <-- main numerical unit
 
-**LOGIC + EXPRESSIONS**
-primary = 
+**ORDER OF OPERATIONS (PEMDAS)**
+expression = term, {("+"|"-"), term}; # handles adding/subtracting  terms together (e.g. 3x + 2x + 3y) --> AS
+term = factor, {("*"|"/"), factor}; # handles variables/numbers being multiplied/divided together (e.g. 3 * x, 2 * x, 3 * y) --> MD
+factor = unary, {("^"), unary}; # handles exponentiation --> E
+unary = [sign], primary; # handles signs (+/-)
+primary = sci_not, [unit_expression] | "(", expression, ")" | identifier, ["(", expression, ")"];
+
+identifier = 
