@@ -5,4 +5,6 @@ project(AxylithPhysicsEngine) # set project name
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_library()
+add_library(axylith_phys STATIC src/lexer.cpp src/parser.cpp) # create static library target named axylith_phys.a
+
+
