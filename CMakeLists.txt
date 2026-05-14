@@ -5,7 +5,11 @@ project(AxylithPhysicsEngine) # set project name
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_library(axylith_phys STATIC src/evaluator.cpp) # create static library target named axylith_phys.a
+add_library(axylith_phys STATIC 
+    src/evaluator.cpp 
+    src/lexer.cpp
+) # create static library target named axylith_phys.a
+
 target_include_directories(axylith_phys PUBLIC include/)
 
 add_executable(tester tests/tester.cpp) # create executable target named tester

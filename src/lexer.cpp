@@ -1,5 +1,8 @@
 #include <string>
 
-struct Token {
-
-}
+enum class Operator {
+    PLUS,
+    MINUS,
+    MULTIPLY,
+    DIVIDE
+};
