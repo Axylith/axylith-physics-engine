@@ -1,0 +1,9 @@
+*.a
+*.o
+build/
+tester
+libaxylith_phys.a
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
