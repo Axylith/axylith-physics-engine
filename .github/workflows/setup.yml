@@ -1,0 +1,56 @@
+name: Reusable setup
+
+on:
+  workflow_call:
+    inputs:
+      compiler:
+        required: false
+        type: string
+        default: 'gcc'
+      build_type:
+        required: false
+        type: string
+        default: 'RelWithDebInfo'
+      extra_cxx_flags:
+        required: false
+        type: string
+        default: ''
+      extra_linker_flags:
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  setup-and-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake ninja-build
+
+      - name: Set compiler
+        run: |
+          case "${{ inputs.compiler }}" in
+            gcc)    echo "CC=gcc" >> $GITHUB_ENV; echo "CXX=g++" >> $GITHUB_ENV ;;
+            clang)  echo "CC=clang" >> $GITHUB_ENV; echo "CXX=clang++" >> $GITHUB_ENV ;;
+          esac
+
+      - name: Configure
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_type }} \
+            -DCMAKE_C_COMPILER=$CC \
+            -DCMAKE_CXX_COMPILER=$CXX \
+            -DCMAKE_CXX_FLAGS="${{ inputs.extra_cxx_flags }}" \
+            -DCMAKE_EXE_LINKER_FLAGS="${{ inputs.extra_linker_flags }}"
+
+      - name: Build
+        run: cmake --build build -j
+
+      - name: Test
+        working-directory: build
+        run: ctest --output-on-failure
