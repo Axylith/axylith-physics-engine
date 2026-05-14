@@ -1,0 +1,11 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-gcc:
+    uses: ./.github/workflows/_setup.yml
+    with:
+      compiler: gcc
+  build-clang:
+    uses: ./.github/workflows/_setup.yml
+    with:
+      compiler: clang
