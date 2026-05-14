@@ -1,29 +1,11 @@
 name: CI
-
-on:
-  push:
-    branches: [ main, dev ]
-  pull_request:
-    branches: [ main ]
-
+on: [push, pull_request]
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y cmake g++
-
-      - name: Configure CMake
-        run: cmake -B build
-
-      - name: Build
-        run: cmake --build build
-
-      - name: Run tests
-        run: ./build/tester
+  build-gcc:
+    uses: ./.github/workflows/_setup.yml
+    with:
+      compiler: gcc
+  build-clang:
+    uses: ./.github/workflows/_setup.yml
+    with:
+      compiler: clang
