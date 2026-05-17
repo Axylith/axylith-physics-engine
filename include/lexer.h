@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <cctype>
+#include <stdexcept>
 
 namespace axylith { // namespace for the physics engine
     enum class TokKind { // all token types used for reading an input/unit input
@@ -16,56 +17,113 @@ namespace axylith { // namespace for the physics engine
         END
     };
 
-    struct Token { // represents a token with its 
+    struct Token { // represents a token --> type of token, its value if a number, its string representation, and its position in the input for error reporting
         TokKind kind; // type of token (e.g., number, +, -, etc.)
         double value; // if the kind is a number, this holds its value
         std::string text; // string representation of the token (e.g. 1 --> "1", kg --> "kg", + --> "PLUS", etc.)
-        int pos; // tracks the position of the token in the input string for error reporting
+        size_t pos; // tracks the position of the token in the input string for error reporting
     }; 
 
     std::vector<Token> tokenize(const std::string& input) { // splits an input into individual tokens (e.g. 1+1--> [1, +, 1, END])
-        std::vector<Token> token;
-        for (char c : input) {
-            // create a token and set to current character and position
-            Token t;
-            t.kind = c;
-            t.pos = &c - &input[0]; 
+        std::vector<Token> tokens; // create vector to hold tokens
+        size_t i = 0; // set position index to 0
 
-            // check token kind and set correct text
+        // loop through the input string character by character
+        while (i < input.size()) {
+            char c = input[i]; // get current character
+
+            // use a switch statement to determine the type of token based on the current character
             switch (c) {
-                case '+': // if plus
-                    t.text = "PLUS";
+                case ' ': // skip whitespace
+                    i++;
                     break;
-                case '-': // if minus
-                    t.text = "MINUS";
+
+                case '+': // if token is plus (+)
+                    tokens.push_back({TokKind::PLUS, 0.0, "+", i});
+                    i++;
                     break;
-                case '*': // if multiply
-                    t.text = "MULTIPLY";
+
+                case '-': // if token is minus (-)
+                    tokens.push_back({TokKind::MINUS, 0.0, "-", i});
+                    i++;
                     break;
-                case '/': // if divide
-                    t.text = "DIVIDE";
+
+                case '*': // if token is multiply (*)
+                    tokens.push_back({TokKind::MULTIPLY, 0.0, "*", i});
+                    i++;
                     break;
-                case '(': // if left parenthesis
-                    t.text = "LPAREN";
+
+                case '/': // if token is divide (/)
+                    tokens.push_back({TokKind::DIVIDE, 0.0, "/", i});
+                    i++;
                     break;
-                case ')': // if right parenthesis
-                    t.text = "RPAREN";
+                case '^': // if token is exponent (^)
+                    tokens.push_back({TokKind::EXP, 0.0, "^", i});
+                    i++;
                     break;
-                default: // if number or invalid character
-                    if (isdigit(c)) {
-                        t.kind = TokKind::NUMBER;
-                        t.value = c - '0'; 
-                        t.text = std::string(1, c);
-                    } else if (!isspace(c)) {
-                        throw std::runtime_error("Invalid character in input: " + std::string(1, c));
+
+                case '(': // if token is left parenthesis (()
+                    tokens.push_back({TokKind::LPAREN, 0.0, "(", i});
+                    i++;
+                    break; 
+
+                case ')': // if token is right parenthesis ())
+                    tokens.push_back({TokKind::RPAREN, 0.0, ")", i});
+                    i++;
+                    break;
+
+                default:
+                    // if token is a number (e.g. 1, 3.14, etc.)
+                    if (std::isdigit((unsigned char)c) || (c == '.' && i + 1 < input.size() && std::isdigit((unsigned char)input[i + 1]))) { 
+                        size_t start = i; // store starting position index
+                        while (i < input.size() && (std::isdigit((unsigned char)input[i]))) { // increase position index if a digit appears
+                            i++;
+                        }
+
+                        if (i < input.size() && input[i] == '.') { // then increase position index if a decimal point appears
+                            i++;
+                            while (i < input.size() && std::isdigit((unsigned char)input[i])) { // increase again for digits that appear after the decimal point
+                                i++;
+                            }
+                        }
+
+                        if (i < input.size() && (input[i] == 'e' || input[i] == 'E')) { // then increase position index if an exponent appears
+                            size_t j = i + 1; // store position index after 'e' or 'E'
+                            if (j < input.size() && (input[j] == '+' || input[j] == '-')) { // if there is a sign after 'e' or 'E', skip the sign
+                                j++;
+                            }
+
+                            if (j < input.size() && std::isdigit((unsigned char)input[j])) { // if digits after the sign
+                                i = j;
+                                while (i < input.size() && std::isdigit((unsigned char)input[i])) { // increase position index for digits in the exponent
+                                    i++;
+                                }
+                            }
+                        }
+
+                        std::string num_string = input.substr(start, i - start); // get substring whcih consists of the number
+                        tokens.push_back({TokKind::NUMBER, std::stod(num_string), num_string, start}); // add number token to vector with its value and string representation
                     }
+
+                    // if token is an identifier (e.g. units, function names, etc.)
+                    else if (std::isalpha((unsigned char)c)) { 
+                        size_t start = i;
+                        while (i < input.size() && std::isalpha((unsigned char)input[i])) { // increase position index for letter characters in the identifier
+                            i++;
+                        }
+                        std::string id_string = input.substr(start, i - start); // get substring which consists of the identifier
+                        tokens.push_back({TokKind::VAR, 0.0, id_string, start}); // add identifier token to vector with its string representation
+                    }
+
+                    else {
+                        throw std::runtime_error("Unexpected character: " + std::string(1, c) + " at position " + std::to_string(i));
+                    }
+                    break;
             }
-            token.push_back(t); // add token to vector of tokens
         }
-        token.push_back({TokKind::END, 0, "END", input.length()}); // add END token
-        return token;
-    }; 
 
-
+        tokens.push_back({TokKind::END, 0.0, "", i}); // add END token
+        return tokens; // return vector of tokens
+     }
 }
 
