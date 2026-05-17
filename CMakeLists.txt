@@ -12,7 +12,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)               # use -std=c++20, not -std=gnu++20
 #       Add them here once they contain definitions, otherwise they just
 #       produce empty object files.
 add_library(axylith_phys STATIC
-    src/evaluator.cpp
     src/lexer.cpp
     # src/parser.cpp
     # src/bindings.cpp
