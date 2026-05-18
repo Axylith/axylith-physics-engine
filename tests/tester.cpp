@@ -86,6 +86,13 @@ int main() {
         {axylith::TokKind::RPAREN, 0.0, ")", 6},
         {axylith::TokKind::END, 0.0, "", 7}
     });
+    printf("\n");
+
+    // test tokenizer for scientific notation 1e-3, which should generate 2 tokens: NUMBER(0.001), END
+    test_tokenizer("1e-3", {
+        {axylith::TokKind::NUMBER, 0.001, "1e-3", 0},
+        {axylith::TokKind::END, 0.0, "", 4}
+    });
 }
 
 // HOW TO RUN:
