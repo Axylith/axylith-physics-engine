@@ -94,7 +94,7 @@ namespace axylith { // namespace for the physics engine
                             tokens.push_back({TokKind::VAR, 0.0, id_string, start}); // add identifier token to vector with its string representation
                         }
 
-                        else {
+                        else { // throw an error otherwise
                             throw std::runtime_error("Unexpected character: " + std::string(1, c) + " at position " + std::to_string(i));
                         }
                         break;

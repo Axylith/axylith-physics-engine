@@ -23,6 +23,7 @@ namespace axylith { // namespace for the physics engine
         size_t pos; // tracks the position of the token in the input string for error reporting
     }; 
 
-    
+    std::vector<Token> tokenize(const std::string& input); // function declaration for tokenizer 
 }
+
 
