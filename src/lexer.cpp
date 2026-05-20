@@ -10,28 +10,22 @@ namespace axylith { // namespace for the physics engine
             // loop through the input string character by character
             while (i < input.size()) {
                 char c = input[i]; // get current character
-
-                // use a switch statement to determine the type of token based on the current character
-                switch (c) {
+                switch (c) { // use a switch statement to determine the type of token based on the current character
                     case ' ': // skip whitespace
                         i++;
                         break;
-
                     case '+': // if token is plus (+)
                         tokens.push_back({TokKind::PLUS, 0.0, "+", i});
                         i++;
                         break;
-
                     case '-': // if token is minus (-)
                         tokens.push_back({TokKind::MINUS, 0.0, "-", i});
                         i++;
                         break;
-
                     case '*': // if token is multiply (*)
                         tokens.push_back({TokKind::MULTIPLY, 0.0, "*", i});
                         i++;
                         break;
-
                     case '/': // if token is divide (/)
                         tokens.push_back({TokKind::DIVIDE, 0.0, "/", i});
                         i++;
@@ -40,17 +34,14 @@ namespace axylith { // namespace for the physics engine
                         tokens.push_back({TokKind::EXP, 0.0, "^", i});
                         i++;
                         break;
-
                     case '(': // if token is left parenthesis (()
                         tokens.push_back({TokKind::LPAREN, 0.0, "(", i});
                         i++;
                         break; 
-
                     case ')': // if token is right parenthesis ())
                         tokens.push_back({TokKind::RPAREN, 0.0, ")", i});
                         i++;
                         break;
-
                     default:
                         // if token is a number (e.g. 1, 3.14, etc.)
                         if (std::isdigit((unsigned char)c) || (c == '.' && i + 1 < input.size() && std::isdigit((unsigned char)input[i + 1]))) { 
@@ -100,7 +91,6 @@ namespace axylith { // namespace for the physics engine
                         break;
                 }
             }
-
             tokens.push_back({TokKind::END, 0.0, "", i}); // add END token
             return tokens; // return vector of tokens
         }
