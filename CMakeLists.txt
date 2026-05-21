@@ -14,6 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)               # use -std=c++20, not -std=gnu++20
 add_library(axylith_phys STATIC
     src/lexer.cpp
     src/parser.cpp
+    src/evaluator.cpp
     # src/bindings.cpp
 )
 target_include_directories(axylith_phys PUBLIC include/)

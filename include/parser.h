@@ -11,8 +11,8 @@ namespace axylith {
         Parser(std::vector<Token> tokens);
 
         // helper functions to access succeeding token, and to get current token and parse it
-        Token peek()
-        Token consume()
+        Token peek();
+        Token consume();
 
         // parser rules for expresions
         double parseExpression();
