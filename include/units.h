@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <cstdint>
 
 namespace axylith {
     // define unit dimensions (using the 7 SI units, storing the value of the exponent of each)
