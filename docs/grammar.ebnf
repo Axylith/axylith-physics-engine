@@ -11,9 +11,9 @@ letter = "a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"|"i"|"j"|"k"|"l"|"m"
        | "_";
 
 **UNITS**
-base_unit = "g"|"m"|"s"|"A"|"K"|"mol"|"cd"|"L";
+base_unit = "g"|"m"|"s"|"A"|"K"|"mol"|"cd";
 derived_unit = "N"|"J"|"Hz"|"Pa"|"V"|"W"|"rad"|"C"|"ohm"|"F"|"Wb"|"S"|"T"|"H"|"lm"|"lx"|"Bq"|"Gy"|"Sv";
-misc_unit = "degC"|"min"|"h"|"day"|"deg";
+misc_unit = "degC"|"min"|"h"|"day"|"deg"|"L";
 prefix = "Q"|"R"|"Y"|"Z"|"E"|"P"|"T"|"G"|"M"|"k"|"h"|"da"|"d"|"c"|"m"|"u"|"n"|"p"|"f"|"a"|"z"|"y"|"r"|"q";
 
 unit_atom = ([prefix], (base_unit | derived_unit)) | misc_unit; # handles prefix seperately from misc

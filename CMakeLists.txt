@@ -15,6 +15,7 @@ add_library(axylith_phys STATIC
     src/lexer.cpp
     src/parser.cpp
     src/evaluator.cpp
+    src/units.cpp
     # src/bindings.cpp
 )
 target_include_directories(axylith_phys PUBLIC include/)
